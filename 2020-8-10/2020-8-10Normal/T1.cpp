@@ -6,43 +6,42 @@ const int dy[4]={0,1,0,-1};
 struct node
 {
 	int x,y,c,next;
-}a[5100];int len,last[2510];
+}a[11000];int len,last[5010];
 inline void ins(int x,int y,int c)
 {
 	len++;a[len].x=x;a[len].y=y;a[len].c=c;
 	a[len].next=last[x];last[x]=len;
 }
-long long f[2510][2],g[2510];
+long long f[5010][2],g[5010];
 inline long long mymin(long long x,long long y){return x<y?x:y;}
+inline long long mymax(long long x,long long y){return x>y?x:y;}
 void treedp(int x,int c)
 {
-	f[x][0]=0;long long t0=0x3f3f3f3f;
-	f[x][1]=0;long long t1=0,t2=1;
-	g[x]=0;long long tg=0;
+	bool t0=true,to=true;
+	long long t1=1,t2=1;
+	long long pj=0,tg=0;
 	for(int k=last[x];k>0;k=a[k].next)
 	{
 		int y=a[k].y;
 		treedp(y,a[k].c);
 		if(c==a[k].c)
 		{
-			f[x][0]+=f[y][0];
-			f[x][1]+=mymin(f[y][0],f[y][1]);
-			if(f[y][1]<=f[y][0])t2=0;
-			t1+=mymin(f[y][0],f[y][1])-g[y];
-			g[x]+=g[y];
+			if(g[y]<f[y][0])t0=false;
+			if(f[y][1]==g[y])t1=0;
+			pj+=g[y];
 		}
 		else
 		{
-			f[x][0]+=mymin(f[y][0],f[y][1]);
-			t0=mymin(t0,f[y][1]-mymin(f[y][0],f[y][1]));
-			f[x][1]+=mymin(f[y][0],f[y][1]);
-			g[x]+=mymin(f[y][0],f[y][1]);
-			tg+=mymin(f[y][0],f[y][1])-g[y];
+			if(g[y]<f[y][0])to=false;
+			if(f[y][1]==g[y])t2=0;
+			tg+=g[y];
 		}
 	}
-	f[x][0]+=t0;
-	f[x][1]=mymin(f[x][1]+t2,f[x][1]+1-t1-tg);
-	if(tg>1)g[x]+=1-tg;
+	f[x][0]=pj+tg+mymax(t0?0:t1,to?0:t2);
+	if(t1==1&&t2==1&&t0&&to)f[x][0]++;
+	f[x][1]=pj+tg+mymax(t1,to?0:t2);
+	if(to)g[x]=pj+tg;
+	else g[x]=pj+tg+t2;
 }
 int n,m;
 char map[110][110];
@@ -74,7 +73,7 @@ int main()
 				map[i][j]='#';
 				rtx=i;rty=j;
 				dfs(i,j);
-				treedp((i-1)*m+j,-1);
+				treedp((i-1)*m+j,0);
 				printf("%d\n",mymin(f[(i-1)*m+j][0],f[(i-1)*m+j][1]));
 				return 0;
 			}
