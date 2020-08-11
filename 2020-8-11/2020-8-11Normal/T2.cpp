@@ -23,12 +23,20 @@ void Euler(int n)
 		}
 	}
 }
+bool bk;
 long long ksm(long long x,long long k,long long p)
 {
-	long long s=1%p;
+	long long s=1;
+	if(p<=s)bk=true;
+	s=s%p;
 	while(k>0)
 	{
-		if(k&1)s=s*x%p;
+		if(k&1)
+		{
+			s=s*x;
+			if(p<=s)bk=true;
+			s=s%p;
+		}
 		x=x*x%p;
 		k>>=1;
 	}
@@ -39,7 +47,13 @@ long long dfs(int k,int p)
 {
 	if(k==n+1)return 1%p;
 	int ak;scanf("%d",&ak);
-	return ksm(ak,dfs(k+1,phi[p]),p)*ksm(ak,phi[p],p)%p;
+	long long ss=dfs(k+1,phi[p]);
+	if(bk)
+	{
+		if(ak==1||ak==0)bk=false;
+		return ksm(ak,ss,p)*ksm(ak,phi[p],p)%p;
+	}
+	else return ksm(ak,ss,p);
 }
 int main()
 {
@@ -47,6 +61,7 @@ int main()
 	int t;scanf("%d",&t);
 	while(t--)
 	{
+		bk=false;
 		int p;scanf("%d%d",&n,&p);
 		printf("%lld\n",dfs(1,p));
 	}
