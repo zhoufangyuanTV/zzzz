@@ -3,75 +3,73 @@
 using namespace std;
 struct node
 {
-	int son[26],fail,manacher;
-}tr[810000];int len;
+	int son[26],len,fail,size;
+}tr[110000],trb[110000];int trlen,trblen;
 char a[51000];
-void bt(int k)
+char b[51000];
+long long ss;
+void dfs(int x,int y)
 {
-	int n=strlen(a+1),x=0;
-	for(int i=k;i<=n;i++)
-	{
-		int c=a[i]-'A';
-		if(tr[x].son[c]==0)
-		{
-			tr[x].son[c]=++len;
-			x=tr[x].son[c];
-			bool bk=true;
-			for(int j=k;j<=k+(i-k+1)/2-1;j++)if(a[j]!=a[i-j+k]){bk=false;break;}
-			tr[x].manacher=bk;
-		}
-		else
-		{
-			x=tr[x].son[c];
-			if(tr[x].manacher)tr[x].manacher++;
-		}
-	}
-}
-int list[810000];
-void getfail()
-{
-	int head=1,tail=1;
+	if(x>1&&y>1)ss=ss+1ll*tr[x].size*trb[y].size;
 	for(int i=0;i<26;i++)
 	{
-		int y=tr[0].son[i];
-		if(y!=0)
-		{
-			tr[y].fail=0;
-			list[tail++]=y;
-		}
-	}
-	while(head<tail)
-	{
-		int x=list[head];
-		for(int i=0;i<26;i++)
-		{
-			int y=tr[x].son[i];
-			if(y==0)tr[x].son[i]=tr[tr[x].fail].son[i];
-			else
-			{
-				tr[y].fail=tr[tr[x].fail].son[i];
-				tr[y].manacher+=tr[tr[y].fail].manacher;
-				list[tail++]=y;
-			}
-		}
-		head++;
+		if(tr[x].son[i]&&trb[y].son[i])dfs(tr[x].son[i],trb[y].son[i]);
 	}
 }
-char b[51000];
 int main()
 {
 	scanf("%s%s",a+1,b+1);
 	int n=strlen(a+1),m=strlen(b+1);
-	len=0;memset(tr,0,sizeof(tr));
-	for(int i=1;i<=n;i++)bt(i);
-	getfail();
-	long long ss=0;int j=0;
+	tr[0].len=0;tr[0].fail=1;tr[0].size=0;
+	tr[1].len=-1;tr[1].fail=1;tr[1].size=1;
+	int last=1;trlen=1;
+	for(int i=1;i<=n;i++)
+	{
+		while(a[i]!=a[i-tr[last].len-1])last=tr[last].fail;
+		int c=a[i]-'A';
+		if(tr[last].son[c]==0)
+		{
+			tr[last].son[c]=++trlen;
+			tr[trlen].len=tr[last].len+2;
+			if(last==1)tr[trlen].fail=0;
+			else
+			{
+				int k=tr[last].fail;
+				while(a[i]!=a[i-tr[k].len-1])k=tr[k].fail;
+				tr[trlen].fail=tr[k].son[c];
+			}
+		}
+		int y=tr[last].son[c];
+		tr[y].size++;
+		last=y;
+	}
+	for(int i=trlen;i>=2;i--)tr[tr[i].fail].size+=tr[i].size;
+	trb[0].len=0;trb[0].fail=1;trb[0].size=0;
+	trb[1].len=-1;trb[1].fail=1;trb[1].size=1;
+	last=1;trblen=1;
 	for(int i=1;i<=m;i++)
 	{
+		while(b[i]!=b[i-trb[last].len-1])last=trb[last].fail;
 		int c=b[i]-'A';
-		j=tr[j].son[c];
-		ss=ss+tr[j].manacher;
+		if(trb[last].son[c]==0)
+		{
+			trb[last].son[c]=++trblen;
+			trb[trblen].len=trb[last].len+2;
+			if(last==1)trb[trblen].fail=0;
+			else
+			{
+				int k=trb[last].fail;
+				while(b[i]!=b[i-trb[k].len-1])k=trb[k].fail;
+				trb[trblen].fail=trb[k].son[c];
+			}
+		}
+		int y=trb[last].son[c];
+		trb[y].size++;
+		last=y;
 	}
+	for(int i=trblen;i>=2;i--)trb[trb[i].fail].size+=trb[i].size;
+	ss=0;
+	dfs(0,0);dfs(1,1);
 	printf("%lld\n",ss);
 	return 0;
 }
