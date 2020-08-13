@@ -9,7 +9,7 @@ int nxt[110];
 void dfs(int l,int r)
 {
 	int now=++len;
-	for(int i=1;i<=m;i++)f[now][i].reset();
+	for(int i=1;i<=m+1;i++)f[now][i].reset();
 	while(nxt[l]==r)l++,r--;
 	if(l==r)
 	{
@@ -33,13 +33,13 @@ void dfs(int l,int r)
 	{
 		int lc=len+1;dfs(l,p-1);
 		int rc=len+1;dfs(p+1,r);
-		for(int i=1;i<=m;i++)f[now][i]=f[lc][i]|f[rc][i];
+		for(int i=1;i<=m+1;i++)f[now][i]=f[lc][i]|f[rc][i];
 	}
 	else if(c=='&')
 	{
 		int lc=len+1;dfs(l,p);
 		int rc=len+1;dfs(p+1,r);
-		for(int i=1;i<=m;i++)
+		for(int i=1;i<=m+1;i++)
 		{
 			for(int j=i-1;j<=m;j++)if(f[lc][i][j])f[now][i]|=f[rc][j+1];
 		}
@@ -47,9 +47,9 @@ void dfs(int l,int r)
 	else
 	{
 		int son=len+1;dfs(l,r-1);
-		if(c=='*')for(int i=1;i<=m;i++)f[now][i][i-1]=1;
-		else for(int i=1;i<=m;i++)f[now][i]=f[son][i];
-		for(int i=1;i<=m;i++)
+		if(c=='*')for(int i=1;i<=m+1;i++)f[now][i][i-1]=1;
+		else for(int i=1;i<=m+1;i++)f[now][i]=f[son][i];
+		for(int i=1;i<=m+1;i++)
 		{
 			for(int j=i-1;j<=m;j++)
 			{
@@ -64,6 +64,7 @@ int main()
 	while(scanf("%s%s",A+1,B+1)!=EOF)
 	{
 		n=strlen(A+1);m=strlen(B+1);
+		memset(nxt,-1,sizeof(nxt));
 		for(int i=1;i<=n;i++)
 		{
 			if(A[i]=='(')sta[++top]=i;

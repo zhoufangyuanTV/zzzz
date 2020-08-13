@@ -14,9 +14,9 @@ int main()
 		for(int j=1;j<=m;j++)if(s[j]=='*')map[i][j]=1;
 	}
 	int ss=0;
-	for(int i=1;i<=n;i++)
+	for(int i=1;i<=k+1;i++)
 	{
-		for(int j=1;j<=m;j++)
+		for(int j=1;j<=k-i+2;j++)
 		{
 			if(i==1&&j==1)continue;
 			for(int l=1;l<=n;l++)mmp[l]=map[l];
@@ -27,16 +27,17 @@ int main()
 			memset(f,0,sizeof(f));f[1][1]=1;
 			for(int kk=1;kk<=k;kk++)
 			{
-				for(int x=1;x<=n;x++)
+				for(int x=1;x<=kk+1;x++)
 				{
-					for(int y=1;y<=m;y++)
+					for(int y=1;y<=kk+1;y++)
 					{
 						if(!mmp[x][y])g[x][y]=(f[x-1][y]+f[x][y-1]+f[x+1][y]+f[x][y+1])%100000007;
+						else g[x][y]=0;
 					}
 				}
-				for(int x=1;x<=n;x++)
+				for(int x=1;x<=kk+1;x++)
 				{
-					for(int y=1;y<=m;y++)
+					for(int y=1;y<=kk+1;y++)
 					{
 						f[x][y]=g[x][y];
 					}
