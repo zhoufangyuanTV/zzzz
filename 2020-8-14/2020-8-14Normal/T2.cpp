@@ -24,28 +24,28 @@ int ans(int x)
 	}
 	return s;
 }
-inline double mo(double x){return x>PI?x-2*PI:x;}
-inline double left(double x,double y)
+inline long double mo(long double x){return x>PI?x-2*PI:x;}
+inline long double left(long double x,long double y)
 {
 	if(y<0)return y<x&&x<y+PI;
 	else return y<x||x<mo(y+PI);
 }
-double f[1100][1100],pp[1100],xx[1100],yy[1100];
-struct point{double x,y,z;int p,pz;}a[2100];
-double zz[2100];
+long double f[1100][1100],pp[1100],xx[1100],yy[1100];
+struct point{long double x,y,z;int p,pz;}a[2100];
+long double zz[2100];
 inline bool cmp(point x,point y){return x.z<y.z;}
 int main()
 {
 	int n,m;scanf("%d%d",&n,&m);nm=n+m;
 	for(int i=1;i<=n;i++)
 	{
-		scanf("%lf%lf",&a[i].x,&a[i].y);
+		scanf("%Lf%Lf",&a[i].x,&a[i].y);
 		a[i].z=atan2(a[i].y,a[i].x);
 		zz[i]=a[i].z;a[i].p=-i;
 	}
 	for(int i=1;i<=m;i++)
 	{
-		scanf("%lf%lf%lf",&xx[i],&yy[i],&pp[i]);
+		scanf("%Lf%Lf%Lf",&xx[i],&yy[i],&pp[i]);
 		a[i+n].x=xx[i];a[i+n].y=yy[i];
 		a[i+n].z=atan2(yy[i],xx[i]);
 		zz[i+n]=a[i+n].z;a[i+n].p=i;
@@ -61,7 +61,7 @@ int main()
 		sort(a+n+1,a+n+m+1,cmp);
 		int k=n+1;
 		while(k<=n+m&&a[k].z<0)k++;
-		double ppp=pp[i];
+		long double ppp=pp[i];
 		if(k==n+m+1)k=n+1;
 		for(int l=k;l<=n+m;l++)
 		{
@@ -82,10 +82,10 @@ int main()
 			}
 		}
 	}
-	double ss=0;
+	long double ss=0;
 	for(int i=1;i<=m;i++)
 	{
-		double iz=-atan2(-yy[i],-xx[i]);
+		long double iz=-atan2(-yy[i],-xx[i]);
 		for(int j=1;j<=n+m;j++)
 		{
 			if(i!=a[j].p)
@@ -114,6 +114,6 @@ int main()
 			}
 		}
 	}
-	printf("%.9lf\n",ss);
+	printf("%.9Lf\n",ss);
 	return 0;
 }
