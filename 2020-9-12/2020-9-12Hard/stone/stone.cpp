@@ -14,7 +14,6 @@ long long ksm(long long x,long long k)
 }
 long long jc[110000],fjc[110000];
 inline long long C(int n,int m){return jc[n]*fjc[n-m]%1000000007*fjc[m]%1000000007;}
-bool f[110][110][2];
 int c[110000];
 int main()
 {
@@ -27,39 +26,27 @@ int main()
 	int n,a,b;scanf("%d%d%d",&n,&a,&b);
 	int t=0;
 	if(a>b){t=a;a=b;b=t;}
-	int sa=0,sb=0;
+	int sa=0,sb=0,sc=0;
 	for(int i=1;i<=n;i++)
 	{
 		scanf("%d",&c[i]);
 		c[i]%=a+b;
-		if(c[i]>=b)sb++;
-		else if(c[i]>=a)sa++;
+		if(c[i]<a)continue;
+		if(c[i]<b)sa++;
+		else if(c[i]<2*a)sb++;
+		else sc++;
 	}
-	long long Alice=0,Bob=0,first=0,second=0;
-	if(a==b)
+	long long Alice=(ksm(2,sa)*ksm(2,sb)%1000000007*ksm(2,sc)%1000000007-ksm(2,sb)*(sc+1)%1000000007+1000000007)%1000000007,Bob=0,first=0,second=0;
+	for(int i=0;i<=sb;i++)
 	{
-		for(int i=1;i<=sb;i+=2)first=(first+C(sb,i))%1000000007;
-		second=(ksm(2,sb)-first+1000000007)%1000000007;
-		long long k=ksm(2,n-sa-sb);
-		printf("%lld %lld %lld %lld\n",k*Alice%1000000007,k*Bob%1000000007,k*first%1000000007,k*second%1000000007);
-		return 0;
+		if(i&1)first=(first+C(sb,i))%1000000007;
+		else second=(second+C(sb,i))%1000000007;
 	}
-	memset(f,false,sizeof(f));
-	for(int i=0;i<=sa;i++)
-	{
-		for(int j=0;j<=sb;j++)
-		{
-			if(i>0&&f[i-1][j][1]==false)f[i][j][0]=true;
-			if(j>0&&f[i][j-1][1]==false)f[i][j][0]=true;
-			if(j>0&&f[i][j-1][0]==false)f[i][j][1]=true;
-			if(f[i][j][0]==true&&f[i][j][1]==false)Alice=(Alice+C(sa,i)*C(sb,j)%1000000007)%1000000007;
-			else if(f[i][j][0]==false&&f[i][j][1]==true)Bob=(Bob+C(sa,i)*C(sb,j)%1000000007)%1000000007;
-			else if(f[i][j][0]==true&&f[i][j][1]==true)first=(first+C(sa,i)*C(sb,j)%1000000007)%1000000007;
-			else second=(second+C(sa,i)*C(sb,j)%1000000007)%1000000007;
-		}
-	}
-	if(t>0){t=Alice;Alice=Bob;Bob=t;}
-	long long k=ksm(2,n-sa-sb);
+	Alice=(Alice+first*sc%1000000007)%1000000007;
+	first=(first+second*sc%1000000007)%1000000007;
+	long long k=ksm(2,n-sa-sb-sc);
+	long long tt=0;
+	if(t>0){tt=Alice;Alice=Bob;Bob=tt;}
 	printf("%lld %lld %lld %lld\n",k*Alice%1000000007,k*Bob%1000000007,k*first%1000000007,k*second%1000000007);
 	return 0;
 }
