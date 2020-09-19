@@ -1,23 +1,49 @@
 #include<cstdio>
 #include<cstring>
+#include<vector>
+#include<algorithm>
 using namespace std;
-char s[110000];
-int p[110000];
+char s[510000];
+int cnt[510000][26];
+vector<int> d[510000];
+long long hashs[510000];
+long long base29[510000];
+int gcd(int x,int y){return y==0?x:gcd(y,x%y);}
 int main()
 {
 	int n,m;scanf("%d%s%d",&n,s+1,&m);
+	base29[0]=1;base29[1]=29;
+	for(int i=2;i<=n;i++)
+	{
+		base29[i]=base29[i-1]*29%1000000007;
+		if(d[i].size()==0)for(int j=i;j<=n;j+=i)d[j].push_back(i);
+	}
+	memset(cnt[0],0,sizeof(cnt[0]));
+	hashs[0]=0;
+	for(int i=1;i<=n;i++)
+	{
+		hashs[i]=(hashs[i-1]*29+s[i]-'a')%1000000007;
+		for(int j=0;j<26;j++)cnt[i][j]=cnt[i-1][j];
+		cnt[i][s[i]-'a']++;
+	}
 	for(int i=1;i<=m;i++)
 	{
 		int l,r;scanf("%d%d",&l,&r);
-		p[l-1]=l-2;
-		for(int j=l;j<=r;j++)
+		if(r==n+1){printf("%d\n",r-l+1);continue;}
+		int g=r-l+1;
+		for(int j=0;j<26;j++)g=gcd(g,cnt[r][j]-cnt[l-1][j]);
+		int ss=1;
+		for(int j:d[g])
 		{
-			int k=p[j-1];
-			while(k!=l-2&&s[k+1]!=s[j])k=p[k];
-			p[j]=k+1;
+			long long jj;
+			for(jj=j;(r-l+1)%jj==0;jj*=j)
+			{
+				int k=(r-l+1)/jj;
+				if((hashs[r-k]-hashs[l-1]*base29[r-k-l+1]%1000000007+1000000007)%1000000007!=(hashs[r]-hashs[l+k-1]*base29[r-k-l+1]%1000000007+1000000007)%1000000007)break;
+			}
+			ss=ss*(jj/j);
 		}
-		if((r-l+1)%(r-p[r])==0)printf("%d\n",r-p[r]);
-		else printf("%d\n",r-l+1);
+		printf("%d\n",(r-l+1)/ss);
 	}
 	return 0;
 }
