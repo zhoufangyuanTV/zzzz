@@ -12,6 +12,7 @@ node operator-(node x)
 {
 	node y;y.n=x.n;
 	for(int i=1;i<=y.n;i++)y.a[x.a[i]]=i;
+	return y;
 }
 node operator^(node x,int k)
 {
@@ -29,6 +30,7 @@ node operator^(node x,int k)
 			while(x.a[j]!=i)y.a[x.a[j]]=x.a[y.a[j]],j=x.a[j];
 		}
 	}
+	return y;
 }
 int main()
 {
@@ -36,7 +38,7 @@ int main()
 	p.n=q.n=n;
 	for(int i=1;i<=n;i++)scanf("%d",&p.a[i]);
 	for(int i=1;i<=n;i++)scanf("%d",&q.a[i]);
-	A=-q;A=A*p;A=A*q;A=A*-p;
+	A=-q*p*q*-p;
 	A=A^k/6;
 	if(k%6==0)r=p*-q;
 	else if(k%6==1)r=p;
