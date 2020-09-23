@@ -3,5 +3,6 @@
 !*.cpp
 !*.sh
 !*.bat
+!*.md
 !*.txt
 !/.gitignore
