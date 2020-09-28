@@ -75,11 +75,12 @@ int main()
 	while(q--)
 	{
 		int t;scanf("%d",&t);
-		int ss=0;int st=0,ed;
-		for(int i=1;i<=t;i++)
+		int ss=0;int st;
+		scanf("%d",&st);
+		int ed=st;
+		for(int i=2;i<=t;i++)
 		{
 			int p;scanf("%d",&p);
-			if(st==0)st=p;
 			ss=ss+f[ed][p];
 			ed=p;
 		}

@@ -27,7 +27,7 @@ int main()
 {
 	int n,m;scanf("%d%d%d",&n,&m,&k);
 	len++;memset(last,0,sizeof(last));
-	for(int i=1;i<=n;i++)
+	for(int i=1;i<=m;i++)
 	{
 		int x,y;scanf("%d%d",&x,&y);
 		ins(x,y);ins(y,x);
