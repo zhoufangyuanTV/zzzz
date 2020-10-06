@@ -10,73 +10,46 @@ inline void ins(int x,int y)
 	len++;a[len].x=x;a[len].y=y;
 	a[len].next=last[x];last[x]=len;
 }
-long long c[51000];
-long long ksm(long long x,long long k)
+long long f[51000][510][2],g[51000][510],c[51000];
+int m,s[51000];
+long long ss=0;
+void dfs(int x,int fa)
 {
-	long long s=0;
-	while(k>0)
+	s[x]=1;
+	f[x][1][0]=f[x][1][1]=1;
+	for(int k=last[x];k>0;k=a[k].next)
 	{
-		if(k&1)s=s*x%1000000007;
-		x=x*x%1000000007;
-		k>>=1;
+		int y=a[k].y;
+		if(y!=fa)
+		{
+			dfs(y,x);
+			s[x]+=s[y];
+			for(int i=s[x]>m?m:s[x];i>=1;i--)
+			{
+				for(int j=i-s[x]+s[y]<1?1:i-s[x]+s[y];j<=i&&j<=s[y];j++)
+				{
+					if(j<(m+1)/2)f[x][i][1]=(f[x][i][1]+f[x][i-j][1]*f[y][j][0])%1000000007;
+					f[x][i][0]=(f[x][i][0]+f[x][i-j][0]*f[y][j][0])%1000000007;
+					g[x][i]=(g[x][i]+g[x][i-j]*f[y][j][0]+g[y][j]*f[x][i-j][0])%1000000007;
+				}
+			}
+		}
 	}
-	return s;
+	for(int i=(m+1)/2;i<=m;i++)g[x][i]=(g[x][i]+(m%2==0&&i==m/2&&fa<x?c[fa]:c[x])*f[x][i][1])%1000000007;
+	ss=(ss+g[x][m])%1000000007;
 }
 int main()
 {
 	freopen("centroid.in","r",stdin);
 	freopen("centroid.out","w",stdout);
-	int n,m;scanf("%d%d",&n,&m);
-	len=0;memset(last,0,sizeof(last));
+	int n;scanf("%d%d",&n,&m);
 	for(int i=1;i<=n;i++)scanf("%lld",&c[i]);
 	for(int i=1;i<n;i++)
 	{
 		int x,y;scanf("%d%d",&x,&y);
 		ins(x,y);ins(y,x);
 	}
-	if(m==1)
-	{
-		long long ss=0;
-		for(int i=1;i<=n;i++)ss=(ss+c[i])%1000000007;
-		printf("%lld\n",ss);
-		return 0;
-	}
-	if(m==2)
-	{
-		long long ss=0;
-		for(int i=1;i<n;i++)
-		{
-			if(a[i*2].x<a[i*2].y)ss=(ss+c[a[i*2].x])%1000000007;
-			else ss=(ss+c[a[i*2].y])%1000000007;
-		}
-		printf("%lld\n",ss);
-		return 0;
-	}
-	if(m==3)
-	{
-		long long ss=0;
-		for(int x=1;x<=n;x++)
-		{
-			long long s=0;
-			for(int k=last[x];k>0;k=a[k].next)s++;
-			ss=(ss+c[x]*s%1000000007*(s-1)%1000000007*500000004%1000000007)%1000000007;
-		}
-		printf("%lld\n",ss);
-		return 0;
-	}
-	bool A=false;int p;
-	for(int i=1;i<=n;i++)
-	{
-		int s=0;
-		for(int k=last[i];k>0;k=a[k].next)s++;
-		if(s==n-1){A=true;p=i;break;}
-	}
-	if(A)
-	{
-		long long ss=c[p];
-		for(int i=n-1;i>=n-m+1;i--)ss=ss*i%1000000007;
-		for(int i=1;i<m;i++)ss=ss*ksm(i,1000000005)%1000000007;
-		printf("%lld\n",ss);
-		return 0;
-	}
+	dfs(1,0);
+	printf("%lld\n",ss);
+	return 0;
 }
