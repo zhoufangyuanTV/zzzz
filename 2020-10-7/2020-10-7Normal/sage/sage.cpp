@@ -1,7 +1,6 @@
 //C++
 #include<cstdio>
 #include<cstring>
-#include<set>
 using namespace std;
 
 namespace IO{
@@ -41,8 +40,9 @@ using IO::update_ans;
 //示例代码：
 
 bool bk[2010000],v[2010000];
-set<int> S;
 int q[1010000],h,t;
+int list[1010000];
+inline int mymin(int x,int y){return x<y?x:y;}
 int main(){
 	freopen("sage.in","r",stdin);
 	freopen("sage.out","w",stdout);
@@ -55,47 +55,45 @@ int main(){
 		memset(bk,false,sizeof(bk));
 		memset(v,false,sizeof(v));
 		for(int i=0;i<=a;i++)bk[i]=v[i]=true;
-		S.clear();
-		for(int i=a+1;i<=b;i++)S.insert(i);
 		h=1;t=0;
+		int head=1,tail=0,lj=a+1;
 		for(int i=1;i<=m;i++){
-			cur_ans=0;
+			bool k=false;
 			if(p[i]==-1)
 			{
 				if(h<=t&&d==0)
 				{
+					k=true;
 					int x=q[h++];
 					v[x]=true;
-					S.erase(x);
-					cur_ans=*S.begin();
+					if(head<=tail&&list[head]==x)head++;
 				}
 			}
 			else
 			{
-				if(bk[p[i]]==false)
+				if(!bk[p[i]])
 				{
+					k=true;
 					bk[p[i]]=v[p[i]]=true;
-					S.erase(p[i]);
-					cur_ans=*S.begin();
+					while(bk[lj])lj++;
 				}
-				else if(v[p[i]]==true&&d==0)
+				else if(v[p[i]]&&d==0)
 				{
+					k=true;
 					v[p[i]]=false;
 					q[++t]=p[i];
-					S.insert(p[i]);
-					cur_ans=*S.begin();
+					while(head<=tail&&p[i]<list[tail])tail--;
+					list[++tail]=p[i];
 				}
-				else if(d==0)
+				else if(h<=t&&d==0)
 				{
-					if(h<=t)
-					{
-						int x=q[h++];
-						v[x]=true;
-						S.erase(x);
-						cur_ans=*S.begin();
-					}
+					k=true;
+					int x=q[h++];
+					v[x]=true;
+					if(head<=tail&&list[head]==x)head++;
 				}
 			}
+			cur_ans=k?mymin(head<=tail?list[head]:lj,lj):0;
 			update_ans(ans_sum,cur_ans,i);
 		}
 		printf("%u\n",ans_sum);

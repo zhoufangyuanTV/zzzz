@@ -1,21 +1,10 @@
 #include<cstdio>
 #include<cstring>
 using namespace std;
-struct node
-{
-	int x,y,c,next;
-}a[1100];int len,last[110];
-inline void ins(int x,int y,int c)
-{
-	len++;
-	a[len].x=x;a[len].y=y;a[len].c=c;
-	a[len].next=last[x];last[x]=len;
-}
+int f[110][11000];
+int g[110][110],gg[110][110];
+int h[110][110][17];
 int p[110],c[110];
-bool mp[110][110];
-int cc[110];
-int list[110];
-int f[11000][110];
 inline int mymax(int x,int y){return x>y?x:y;}
 int main()
 {
@@ -27,58 +16,96 @@ int main()
 		scanf("%d%d",&p[i],&c[i]);
 		if(c[i]>C)c[i]=C;
 	}
-	len=0;memset(last,0,sizeof(last));
-	for(int i=1;i<=n;i++)
+	memset(h,-1,sizeof(h));
+	for(int i=1;i<=m;i++)
 	{
 		int x,y,c;
 		scanf("%d%d%d",&x,&y,&c);
-		ins(x,y,c);
+		h[x][y][0]=c;
 	}
-	memset(mp,false,sizeof(mp));
-	for(int i=1;i<=n;i++)
+	for(int i=1;1<<i<=C;i++)
 	{
-		int head=1,tail=2;
-		list[head]=i;cc[i]=c[i];
-		while(head<tail)
+		for(int x=1;x<=n;x++)
 		{
-			int x=list[head];
-			mp[i][x]=true;
-			if(cc[x]>0)
+			for(int y=1;y<=n;y++)
 			{
-				for(int k=last[x];k>0;k=a[k].next)
+				h[x][y][i]=h[x][y][i-1];
+			}
+		}
+		for(int x=1;x<=n;x++)
+		{
+			for(int y=1;y<=n;y++)
+			{
+				if(h[x][y][i-1]!=-1)
 				{
-					int y=a[k].y;
-					if(mp[i][y]==false)
+					for(int z=1;z<=n;z++)
 					{
-						cc[y]=cc[x]-1;
-						list[tail++]=y;
+						if(h[y][z][i-1]!=-1)
+						{
+							h[x][z][i]=mymax(h[x][z][i],h[x][y][i-1]+h[y][z][i-1]);
+						}
 					}
 				}
 			}
-			head++;
+		}
+	}
+	memset(g,-1,sizeof(g));
+	for(int i=1;i<=n;i++)g[i][i]=0;
+	for(int i=1;i<=n;i++)
+	{
+		for(int j=0;1<<j<=c[i];j++)
+		{
+			if(c[i]>>j&1)
+			{
+				for(int x=1;x<=n;x++)gg[i][x]=g[i][x];
+				for(int x=1;x<=n;x++)
+				{
+					if(gg[i][x]!=-1)
+					{
+						for(int y=1;y<=n;y++)
+						{
+							if(h[x][y][j]!=-1)g[i][y]=mymax(g[i][y],gg[i][x]+h[x][y][j]);
+						}
+					}
+				}
+			}
+		}
+	}
+	memset(f,-1,sizeof(f));
+	for(int i=1;i<=n;i++)f[i][0]=0;
+	for(int i=0;i<=n*n;i++)
+	{
+		if(i>0)
+		{
+			for(int j=1;j<=n;j++)f[j][i]=mymax(f[j][i],f[j][i-1]);
+		}
+		for(int j=1;j<=n;j++)
+		{
+			if(i+p[j]<=n*n)
+			{
+				for(int k=1;k<=n;k++)
+				{
+					if(g[j][k]!=-1)f[j][i+p[j]]=mymax(f[j][i+p[j]],f[k][i]+g[j][k]);
+				}
+			}
 		}
 	}
 	while(T--)
 	{
 		int s,q,d;scanf("%d%d%d",&s,&q,&d);
-		memset(f,0,sizeof(f));f[0][s]=0;
-		int ss=-1;
-		for(int i=0;i<=q;i++)
+		if(f[s][q]<d)
 		{
-			for(int x=1;x<=n;x++)
-			{
-				if(f[i][x]>=d)
-				{
-					ss=i;break;
-				}
-				for(int y=1;y<=n;y++)
-				{
-					if(i+p[x]<=q&&mp[x][y])f[i+p[x]][y]=mymax(f[i+p[x]][y],f[i][x]+1);
-				}
-			}
-			if(ss!=-1)break;
+			printf("-1\n");
+			continue;
 		}
-		printf("%d\n",ss);
+		int l=0,r=q;
+		while(l<r)
+		{
+			int mid=(l+r)/2;
+			if(f[s][mid]>=d)r=mid;
+			else l=mid+1;
+		}
+		printf("%d\n",q-r);
 	}
 	return 0;
 }

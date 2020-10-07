@@ -36,7 +36,7 @@ int main()
 				if(mins==-1||a[i]<a[mins])mins=i;
 				j++;
 			}
-			if((a[i]>=0&&a[i-1]>=0)||(a[i]<=0&&a[i-1]<=0))break;
+			if((a[i]>0&&a[i-1]>0)||(a[i]<0&&a[i-1]<0)||(a[i]==0&&a[i-1]==0))break;
 			a[i+1]=k*a[i]+a[i-1];
 			i++;
 		}
@@ -47,7 +47,7 @@ int main()
 				if(maxs==-1||a[maxs]<0)maxs=s[j];
 				if(mins==-1||0<a[mins])mins=s[j];
 			}
-			else if(a[i]<=0&&a[i-1]<=0)
+			else if(a[i]<0&&a[i-1]<0)
 			{
 				if(maxs==-1)maxs=s[j];
 				if(mins==-1)mins=s[m];
