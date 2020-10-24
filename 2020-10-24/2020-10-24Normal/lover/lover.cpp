@@ -1,13 +1,14 @@
+#pragma GCC optimize("Ofast")
+#include<cmath>
 #include<cstdio>
 #include<cstring>
 using namespace std;
-long long f[18][55][37][19][19],g[55][37][19][19],two[55],three[37],five[19],seven[19];
+long long f[18][55][37][19][19],g[55][37][19][19],G[55][37][19][19],three[37],five[19],seven[19];
 inline int mymin(int x,int y){return x<y?x:y;}
 int main()
 {
 	freopen("lover.in","r",stdin);
 	freopen("lover.out","w",stdout);
-	two[0]=1;for(int i=1;i<=54;i++)two[i]=two[i-1]*2;
 	three[0]=1;for(int i=1;i<=36;i++)three[i]=three[i-1]*3;
 	five[0]=1;for(int i=1;i<=18;i++)five[i]=five[i-1]*5;
 	seven[0]=1;for(int i=1;i<=18;i++)seven[i]=seven[i-1]*7;
@@ -17,15 +18,15 @@ int main()
 	while(gs<=n/10)dg++,gs=gs*10;
 	memset(f,0,sizeof(f));f[0][0][0][0][0]=1;
 	memset(g,0,sizeof(g));
-	for(int d=1;d<=dg;d++)
+	for(register int d=1;d<=dg;d++)
 	{
-		for(int i=0;i<=d*3;i++)
+		for(register int i=0;i<=d*3;i++)
 		{
-			for(int j=0;j<=(d*3-i)*2/3;j++)
+			for(register int j=0;j<=(d*3-i)*2/3;j++)
 			{
-				for(int k=0;k<=((d*3-i)*2/3-j)/2;k++)
+				for(register int k=0;k<=((d*3-i)*2/3-j)/2;k++)
 				{
-					for(int l=0;l<=((d*3-i)*2/3-j)/2-k;l++)
+					for(register int l=0;l<=((d*3-i)*2/3-j)/2-k;l++)
 					{
 						f[d][i][j][k][l]+=f[d-1][i][j][k][l];
 						if(i>0)f[d][i][j][k][l]+=f[d-1][i-1][j][k][l];
@@ -47,7 +48,7 @@ int main()
 	while(gs>0)
 	{
 		int ci=n/gs;
-		for(int di=1;di<ci;di++)
+		for(register int di=1;di<ci;di++)
 		{
 			int aa=0,bb=0,cc=0,dd=0;
 			if(di==2)aa++;
@@ -58,13 +59,13 @@ int main()
 			else if(di==7)dd++;
 			else if(di==8)aa+=3;
 			else if(di==9)bb+=2;
-			for(int i=0;i<=dg*3;i++)
+			for(register int i=0;i<=dg*3;i++)
 			{
-				for(int j=0;j<=(dg*3-i)*2/3;j++)
+				for(register int j=0;j<=(dg*3-i)*2/3;j++)
 				{
-					for(int k=0;k<=((dg*3-i)*2/3-j)/2;k++)
+					for(register int k=0;k<=((dg*3-i)*2/3-j)/2;k++)
 					{
-						for(int l=0;l<=((dg*3-i)*2/3-j)/2-k;l++)
+						for(register int l=0;l<=((dg*3-i)*2/3-j)/2-k;l++)
 						{
 							g[a+aa+i][b+bb+j][c+cc+k][d+dd+l]=(g[a+aa+i][b+bb+j][c+cc+k][d+dd+l]+f[dg][i][j][k][l])%998244353;
 						}
@@ -72,6 +73,7 @@ int main()
 				}
 			}
 		}
+		if(ci==0)break;
 		if(ci==2)a++;
 		else if(ci==3)b++;
 		else if(ci==4)a+=2;
@@ -82,54 +84,50 @@ int main()
 		else if(ci==9)b+=2;
 		n=n%gs;gs=gs/10;dg--;
 	}
-	g[a][b][c][d]++;
+	if(gs==0)g[a][b][c][d]++;
 	long long ss=0;
-	/*for(int i=0;i<=54;i++)
+	for(register int i=0;i<=54;i++)
 	{
-		for(int j=0;j<=36;j++)
+		for(register int j=0;j<=36;j++)
 		{
-			for(int k=0;k<=18;k++)
+			for(register int k=0;k<=18;k++)
 			{
-				for(int l=0;l<=18;l++)
+				for(register int l=0;l<=18;l++)
 				{
-					if(g[i][j][k][l]>0)ss++;
+					G[i][j][k][l]=g[i][j][k][l];
+					if(i>0)G[i][j][k][l]=(G[i][j][k][l]+G[i-1][j][k][l])%998244353;
 				}
 			}
 		}
-	}*/
-	for(int i=0;i<=dn*3;i++)
+	}
+	register int i,j,k,l,ii,jj,kk,ll;
+	register long long mj,mk,ml;
+	for(i=0;i<=dn*3;i++)
 	{
-		for(int j=0;j<=(dn*3-i)*2/3;j++)
+		for(j=0;j<=(dn*3-i)*2/3;j++)
 		{
-			for(int k=0;k<=((dn*3-i)*2/3-j)/2;k++)
+			for(k=0;k<=((dn*3-i)*2/3-j)/2;k++)
 			{
-				for(int l=0;l<=((dn*3-i)*2/3-j)/2-k;l++)
+				for(l=0;l<=((dn*3-i)*2/3-j)/2-k;l++)
 				{
 					if(g[i][j][k][l]>0)
 					{
-						long long sr=1;
-						for(int ii=0;ii<=dn*3;ii++)
+						for(jj=0;jj<=dn*2;jj++)
 						{
-							if(sr>m/two[mymin(i,ii)])break;
-							sr=sr*two[mymin(i,ii)];
-							for(int jj=0;jj<=(dn*3-ii)*2/3;jj++)
+							mj=m/three[mymin(j,jj)];
+							if(mj==0)break;
+							for(kk=0;kk<=(dn*2-jj)/2;kk++)
 							{
-								if(sr>m/three[mymin(j,jj)])break;
-								sr=sr*three[mymin(j,jj)];
-								for(int kk=0;kk<=((dn*3-ii)*2/3-jj)/2;kk++)
+								mk=mj/five[mymin(k,kk)];
+								if(mk==0)break;
+								for(ll=0;ll<=(dn*2-jj)/2-kk;ll++)
 								{
-									if(sr>m/five[mymin(k,kk)])break;
-									sr=sr*five[mymin(k,kk)];
-									for(int ll=0;ll<=((dn*3-ii)*2/3-jj)/2-kk;ll++)
-									{
-										if(sr>m/seven[mymin(l,ll)])break;
-										ss=(ss+g[i][j][k][l]*g[ii][jj][kk][ll])%998244353;
-									}
-									sr=sr/five[mymin(k,kk)];
+									ml=mk/seven[mymin(l,ll)];
+									if(ml==0)break;
+									ii=log2(ml);
+									if(ii>=0)ss=(ss+g[i][j][k][l]*G[ii<i?ii:54][jj][kk][ll])%998244353;
 								}
-								sr=sr/three[mymin(j,jj)];
 							}
-							sr=sr/two[mymin(i,ii)];
 						}
 					}
 				}

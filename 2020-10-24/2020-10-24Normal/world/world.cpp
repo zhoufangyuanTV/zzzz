@@ -49,6 +49,7 @@ int main()
 					while(g%p[j]==0)g=g/p[j];
 				}
 			}
+			if(g>1&&ksm(2,(p[i]-1)/g,p[i])==1)bk=false;
 			if(bk)ss++,Ans=Ans+p[i]-1;
 		}
 	}
