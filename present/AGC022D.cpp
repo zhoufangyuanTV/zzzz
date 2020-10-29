@@ -13,20 +13,18 @@ int main()
 		scanf("%d",&t[j]);
 		ss=ss+t[j]/(2*m);
 		t[j]=t[j]%(2*m);
-		if(t[j]==0)j--,n--;
+		if(t[j]==0)t[j]+=2*m,ss--;
 	}
+	int i=1,j=1;
 	memset(b,false,sizeof(b));
-	int i=1,j=n;bool bk=true;
-	while(i<j)
+	while(j<n)
 	{
-		while(i<j&&t[i]>2*x[i])i++;
-		while(i<j&&t[j]>2*m-2*x[j])bk=false,j--;
-		if(i<j)b[i]=true,b[j]=true,i++,j--,ss--;
+		while(i<=n&&(t[i]>2*x[i]||b[i]))i++;
+		if(j<=i)j=i+1;
+		while(j<=n&&(t[j]>2*m-2*x[j]||b[j]))j++;
+		if(j<=n)b[i]=b[j]=true,ss--;
 	}
-	i=1;int jj=n;
-	while(i<j&&t[i]>2*x[i])i++;
-	while(i<j&&t[j]>2*m-2*x[j]||b[j]==true)j--;
-	if((i>1||bk)&&i<j)ss--;
+	if(b[n]==false&&t[n]<=2*m-2*x[n])ss--;
 	ss=ss+n+1;
 	printf("%lld\n",1ll*ss*2*m);
 	return 0;
