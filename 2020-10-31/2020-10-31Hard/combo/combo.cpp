@@ -54,7 +54,7 @@ int main()
 	g=0;sp=0;dfs(st);
 	printf("%lld\n",g);
 	for(int i=1;i<g;i++)printf("%d ",u[i]);
-	printf("%d\n",u[g]);
+	if(g>0)printf("%d\n",u[g]);
 	for(int i=1;i<sp;i++)printf("%d ",pp[i]);
 	printf("%d\n",pp[sp]);
 	return 0;
