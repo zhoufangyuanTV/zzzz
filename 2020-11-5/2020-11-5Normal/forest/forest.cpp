@@ -10,7 +10,7 @@ struct node
 }list[4010000];
 int upx,upy,downx,downy,tdx,tdy;
 bool b[2100][2100];
-int bfs(int stx,int sty,int edx,int edy)
+int bfs(int stx,int sty,int edx,int edy,int ddy)
 {
 	int head=1,tail=2;
 	b[stx][sty]=false;
@@ -18,9 +18,9 @@ int bfs(int stx,int sty,int edx,int edy)
 	while(head<tail)
 	{
 		int x=list[head].x,y=list[head].y,d=list[head].d;
-		if(x==edx&&y==edy)return d;
 		for(int i=0;i<8;i++)
 		{
+			if(head==1&&dy[i]!=ddy)continue;
 			int xx=list[head].x+dx[i],yy=list[head].y+dy[i];
 			if(b[xx][yy]==true)
 			{
@@ -65,8 +65,8 @@ int main()
 				else b[i][j]=true;
 			}
 		}
-		for(int i=1;i<=upx+1;i++)b[i][upy+1]=false;
-		ss=ss+bfs(tdx,tdy,upx,upy);
+		for(int i=1;i<=upx+1;i++)b[i][upy]=false;
+		ss=ss+bfs(upx,upy,tdx,tdy,-1);
 		for(int i=1;i<=n;i++)
 		{
 			for(int j=1;j<=m;j++)
@@ -75,8 +75,8 @@ int main()
 				else b[i][j]=true;
 			}
 		}
-		for(int i=1;i<=upx+1;i++)b[i][upy-1]=false;
-		ss=ss+bfs(tdx,tdy,upx,upy);
+		for(int i=1;i<=upx+1;i++)b[i][upy]=false;
+		ss=ss+bfs(upx,upy,tdx,tdy,1);
 		printf("%d\n",ss);
 	}
 	else if(tdx<downx-1)
@@ -90,8 +90,8 @@ int main()
 				else b[i][j]=true;
 			}
 		}
-		for(int i=downx-1;i<=n;i++)b[i][downy-1]=false;
-		ss=ss+bfs(tdx,tdy,downx,downy);
+		for(int i=downx-1;i<=n;i++)b[i][downy]=false;
+		ss=ss+bfs(downx,downy,tdx,tdy,1);
 		for(int i=1;i<=n;i++)
 		{
 			for(int j=1;j<=m;j++)
@@ -100,8 +100,8 @@ int main()
 				else b[i][j]=true;
 			}
 		}
-		for(int i=downx-1;i<=n;i++)b[i][downy+1]=false;
-		ss=ss+bfs(tdx,tdy,downx,downy);
+		for(int i=downx-1;i<=n;i++)b[i][downy]=false;
+		ss=ss+bfs(downx,downy,tdx,tdy,-1);
 		printf("%d\n",ss);
 	}
 	else
