@@ -12,42 +12,31 @@ int main()
 		printf("-1\n");
 		return 0;
 	}
-	if(n>m)
+	if(edx<=2&&n-1<=edx&&edy<=2&&m-1<=edy)
 	{
-		n^=m^=n^=m;
-		stx^=sty^=stx^=sty;
-		edx^=edy^=edx^=edy;
+		printf("1\n");
+		return 0;
 	}
-	if(n==1)
+	if(n==2&&abs(edy-sty)>1||m==2&&abs(stx-edx)>1)
 	{
 		printf("2\n");
 		return 0;
 	}
-	if(n==2)
+	int ss=0;
+	if(edx<=2)ss++;
+	if(edy<=2)ss++;
+	if(n-1<=edx)ss++;
+	if(m-1<=edy)ss++;
+	if(ss==3)
 	{
-		printf("%d",m==2?1:2);
+		printf("2\n");
 		return 0;
 	}
-	if(n==3)
+	if(ss==2&&!((stx+1==edx||stx-1==edx)&&(sty+1==edy||sty-1==edy)))
 	{
-		if(m==3&&stx==2&&sty==2)
-		{
-			printf("%d",1);
-			return 0;
-		}
+		printf("2\n");
+		return 0;
 	}
-	int ss=4;
-	if(abs(stx-edx)==1&&abs(sty-edy)==1)ss++;
-	if(edx==1||edx==2)ss--;
-	if(edx==n-1||edx==n)ss--;
-	if(edy==1||edy==2)ss--;
-	if(edy==m-1||edy==m)ss--;
-	if(ss<2)ss=2;
-	if(stx==1&&sty==1||stx==1&&sty==m||stx==n&&sty==1||stx==n&&sty==m)
-	{
-		if(3<ss)ss=3;
-	}
-	if(n<ss)ss=n;
-	printf("%d\n",ss);
+	printf("3\n");
 	return 0;
 }
