@@ -1,45 +1,30 @@
 #include<cstdio>
 #include<cstring>
-#include<algorithm>
 using namespace std;
-int a[110],l[110],r[110];
-int sta[110],top;
+int p;
+long long ksm(long long x,long long k)
+{
+	long long s=1;
+	while(k>0)
+	{
+		if(k&1)s=s*x%p;
+		x=x*x%p;
+		k>>=1;
+	}
+	return s;
+}
 int main()
 {
 	freopen("dtree.in","r",stdin);
 	freopen("dtree.out","w",stdout);
-	int n,p;scanf("%d%d",&n,&p);
-	for(int i=1;i<=n;i++)a[i]=i;
-	int ss=0;
-	do
+	int n;scanf("%d%d",&n,&p);
+	long long f,g=0,jc=1;
+	for(int i=2;i<=n;i++)
 	{
-		top=0;
-		for(int i=1;i<=n;i++)
-		{
-			if(i==1||a[i]<a[i-1])l[i]=0;
-			else
-			{
-				while(top>0&&a[sta[top]]<a[i])top--;
-				l[i]=sta[top+1];
-			}
-			sta[++top]=i;
-		}
-		top=0;
-		for(int i=n;i>=1;i--)
-		{
-			if(i==n||a[i]<a[i+1])r[i]=0;
-			else
-			{
-				while(top>0&&a[sta[top]]<a[i])top--;
-				r[i]=sta[top+1];
-			}
-			sta[++top]=i;
-		}
-		for(int i=1;i<=n;i++)
-		{
-			if(l[i]!=0&&r[i]!=0)ss=(ss+r[i]-l[i])%p;
-		}
-	}while(next_permutation(a+1,a+n+1));
-	printf("%d\n",ss);
+		f=(2*jc*g+jc*(i-2)%p*(i+1)%p*(p+1)/2)%p;
+		jc=jc*i%p;
+		g=(g+f*ksm(jc,p-2))%p;
+	}
+	printf("%lld\n",f);
 	return 0;
 }
