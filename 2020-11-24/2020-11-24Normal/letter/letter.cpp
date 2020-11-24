@@ -1,57 +1,214 @@
 #include<cstdio>
 #include<cstring>
 using namespace std;
-int f[5100][5100];
+int f[5100][6],ff[5100][6];
 char a[5100];
-inline int mymin(int x,int y){return x<y?x:y;}
-char sta[5100];int top;
+inline void mymin(int &x,int y){y<x?x=y:0;}
 int main()
 {
 	freopen("letter.in","r",stdin);
 	freopen("letter.out","w",stdout);
 	scanf("%s",a+1);
 	int n=strlen(a+1);
-	bool bk=true;
-	for(int i=1;i<=n;i++)
+	memset(f,63,sizeof(f));
+	if(a[1]=='A')f[1][0]=f[1][1]=1;
+	else if(a[1]=='B')f[1][2]=f[1][3]=1;
+	else f[1][4]=f[1][5]=1;
+	for(int i=2;i<=n;i++)
 	{
-		if(a[i]=='C'){bk=false;break;}
-	}
-	if(bk)
-	{
-		top=0;
-		int ss=0;
-		for(int i=1;i<=n;i++)
+		for(int j=1;j<i;j++)
 		{
-			if(top==0||sta[top]!=a[i])
+			ff[j][0]=f[j][0];
+			ff[j][1]=f[j][1];
+			ff[j][2]=f[j][2];
+			ff[j][3]=f[j][3];
+			ff[j][4]=f[j][4];
+			ff[j][5]=f[j][5];
+		}
+		memset(f,63,sizeof(f));
+		int c=a[i]-'A';
+		for(int j=1;j<i;j++)
+		{
+			if(j%3==0)
 			{
-				if(top==2)top--;
+				if(c==0)
+				{
+					mymin(f[j+1][0],ff[j][0]+1);
+					mymin(f[j+1][1],ff[j][1]+1);
+					if(j>2)
+					{
+						mymin(f[j-2][0],ff[j][0]);
+						mymin(f[j-2][1],ff[j][1]);
+					}
+					mymin(f[j][3],ff[j][3]);
+					mymin(f[j][5],ff[j][5]);
+					if(j>1)
+					{
+						mymin(f[j-1][2],ff[j][2]);
+						mymin(f[j-1][4],ff[j][4]);
+					}
+				}
+				else if(c==1)
+				{
+					mymin(f[j+1][2],ff[j][2]+1);
+					mymin(f[j+1][3],ff[j][3]+1);
+					if(j>2)
+					{
+						mymin(f[j-2][2],ff[j][2]);
+						mymin(f[j-2][3],ff[j][3]);
+					}
+					mymin(f[j][1],ff[j][1]);
+					mymin(f[j][4],ff[j][4]);
+					if(j>1)
+					{
+						mymin(f[j-1][0],ff[j][0]);
+						mymin(f[j-1][5],ff[j][5]);
+					}
+				}
 				else
 				{
-					sta[++top]=a[i];
-					ss++;
+					mymin(f[j+1][4],ff[j][4]+1);
+					mymin(f[j+1][5],ff[j][5]+1);
+					if(j>2)
+					{
+						mymin(f[j-2][4],ff[j][4]);
+						mymin(f[j-2][5],ff[j][5]);
+					}
+					mymin(f[j][0],ff[j][0]);
+					mymin(f[j][2],ff[j][2]);
+					if(j>1)
+					{
+						mymin(f[j-1][1],ff[j][1]);
+						mymin(f[j-1][3],ff[j][3]);
+					}
 				}
 			}
-		}
-		printf("%d\n",n+ss*2);
-		return 0;
-	}
-	memset(f,63,sizeof(f));
-	for(int i=1;i<=n;i++)f[i][i]=1;
-	for(int j=2;j<=n;j++)
-	{
-		for(int i=j-1;i>=1;i--)
-		{
-			if(a[j-1]==a[j])f[i][j]=f[i][j-1];
-			else
+			else if(j%3==1)
 			{
-				f[i][j]=f[i][j-1]+1;
-				for(int k=i;k<j;k++)
+				if(c==0)
 				{
-					if(a[k]==a[j])f[i][j]=mymin(f[i][j],f[i][k]+f[k+1][j-1]);
+					mymin(f[j+1][2],ff[j][2]+1);
+					mymin(f[j+1][4],ff[j][4]+1);
+					if(j>2)
+					{
+						mymin(f[j-2][2],ff[j][2]);
+						mymin(f[j-2][4],ff[j][4]);
+					}
+					mymin(f[j][0],ff[j][0]);
+					mymin(f[j][1],ff[j][1]);
+					if(j>1)
+					{
+						mymin(f[j-1][3],ff[j][3]);
+						mymin(f[j-1][5],ff[j][5]);
+					}
+				}
+				else if(c==1)
+				{
+					mymin(f[j+1][0],ff[j][0]+1);
+					mymin(f[j+1][5],ff[j][5]+1);
+					if(j>2)
+					{
+						mymin(f[j-2][0],ff[j][0]);
+						mymin(f[j-2][5],ff[j][5]);
+					}
+					mymin(f[j][2],ff[j][2]);
+					mymin(f[j][3],ff[j][3]);
+					if(j>1)
+					{
+						mymin(f[j-1][1],ff[j][1]);
+						mymin(f[j-1][4],ff[j][4]);
+					}
+				}
+				else
+				{
+					mymin(f[j+1][1],ff[j][1]+1);
+					mymin(f[j+1][3],ff[j][3]+1);
+					if(j>2)
+					{
+						mymin(f[j-2][1],ff[j][1]);
+						mymin(f[j-2][3],ff[j][3]);
+					}
+					mymin(f[j][4],ff[j][4]);
+					mymin(f[j][5],ff[j][5]);
+					if(j>1)
+					{
+						mymin(f[j-1][0],ff[j][0]);
+						mymin(f[j-1][2],ff[j][2]);
+					}
+				}
+			}
+			else if(j%3==2)
+			{
+				if(c==0)
+				{
+					mymin(f[j+1][3],ff[j][3]+1);
+					mymin(f[j+1][5],ff[j][5]+1);
+					if(j>2)
+					{
+						mymin(f[j-2][3],ff[j][3]);
+						mymin(f[j-2][5],ff[j][5]);
+					}
+					mymin(f[j][2],ff[j][2]);
+					mymin(f[j][4],ff[j][4]);
+					if(j>1)
+					{
+						mymin(f[j-1][0],ff[j][0]);
+						mymin(f[j-1][1],ff[j][1]);
+					}
+				}
+				else if(c==1)
+				{
+					mymin(f[j+1][1],ff[j][1]+1);
+					mymin(f[j+1][4],ff[j][4]+1);
+					if(j>2)
+					{
+						mymin(f[j-2][1],ff[j][1]);
+						mymin(f[j-2][4],ff[j][4]);
+					}
+					mymin(f[j][0],ff[j][0]);
+					mymin(f[j][5],ff[j][5]);
+					if(j>1)
+					{
+						mymin(f[j-1][2],ff[j][2]);
+						mymin(f[j-1][3],ff[j][3]);
+					}
+				}
+				else
+				{
+					mymin(f[j+1][0],ff[j][0]+1);
+					mymin(f[j+1][2],ff[j][2]+1);
+					if(j>2)
+					{
+						mymin(f[j-2][0],ff[j][0]);
+						mymin(f[j-2][2],ff[j][2]);
+					}
+					mymin(f[j][1],ff[j][1]);
+					mymin(f[j][3],ff[j][3]);
+					if(j>1)
+					{
+						mymin(f[j-1][4],ff[j][4]);
+						mymin(f[j-1][5],ff[j][5]);
+					}
 				}
 			}
 		}
+		mymin(f[1][0],f[1][1]);
+		mymin(f[1][1],f[1][0]);
+		mymin(f[1][2],f[1][3]);
+		mymin(f[1][3],f[1][2]);
+		mymin(f[1][4],f[1][5]);
+		mymin(f[1][5],f[1][4]);
 	}
-	printf("%d\n",n+f[1][n]*2);
+	int ss=0x3f3f3f3f;
+	for(int i=1;i<=n;i++)
+	{
+		mymin(ss,f[i][0]);
+		mymin(ss,f[i][1]);
+		mymin(ss,f[i][2]);
+		mymin(ss,f[i][3]);
+		mymin(ss,f[i][4]);
+		mymin(ss,f[i][5]);
+	}
+	printf("%d\n",n+ss*2);
 	return 0;
 }

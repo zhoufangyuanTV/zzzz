@@ -25,7 +25,7 @@ void dfs(int x,int fa)
 			dfs(y,x);
 			f[x]=mymax(f[x],f[y]+a[k].c);
 			g[x]=(g[x]+2*g[y]+1)%998244353;
-			h[x]=(h[x]+2*h[y]+(2*g[y]+1)*a[k].c+f[y]%998244353)%998244353;
+			h[x]=(h[x]+2*h[y]+(2*g[y]+1)*a[k].c+f[y])%998244353;
 		}
 	}
 }
@@ -47,7 +47,7 @@ void dfs(int x,int fa,long long G,long long H)
 			else if(Sec<f[y]+a[k].c)Sec=f[y]+a[k].c;
 		}
 	}
-	ss=(ss+2*(Fst+Sec)+h[x]+g[x]*Fst)%998244353;
+	ss=(ss+2*(Fst+Sec)+h[x]+Fst%998244353*g[x])%998244353;
 	if(Fst!=Sec)
 	{
 		bool bk=true;
@@ -58,14 +58,14 @@ void dfs(int x,int fa,long long G,long long H)
 			{
 				if(Fst==f[y]+a[k].c)
 				{
-					ss=(ss+(2*g[y]+1)*(Sec-Fst+998244353))%998244353;
+					ss=(ss+(2*g[y]+1)*((Sec-Fst)%998244353+998244353))%998244353;
 					bk=false;break;
 				}
 			}
 		}
-		if(bk)ss=(ss+G*(Sec-Fst+998244353))%998244353;
+		if(bk)ss=(ss+G*((Sec-Fst)%998244353+998244353))%998244353;
 	}
-	As=As+2+g[x];
+	As=(As+2+g[x])%998244353;
 	long long ff=F[x];
 	slen=0;
 	for(int k=last[x];k>0;k=a[k].next)
@@ -91,7 +91,7 @@ void dfs(int x,int fa,long long G,long long H)
 		if(y!=fa)
 		{
 			long long gg=(g[x]-2*g[y]%998244353+998244352)%998244353;
-			long long hh=((h[x]-2*h[y]-(2*g[y]+1)*a[k].c-f[y]%998244353)%998244353+998244353)%998244353;
+			long long hh=((h[x]-2*h[y]-(2*g[y]+1)*a[k].c-f[y])%998244353+998244353)%998244353;
 			dfs(y,x,(2*gg+1)%998244353,(2*hh+2*gg*a[k].c+F[y])%998244353);
 		}
 	}
