@@ -110,6 +110,11 @@ int div(int x)
 	return rt;
 }
 long long f[110000],sf[110000],g[110000];
+struct zuxian
+{
+	int x;
+	long long g;
+}pa[110000];int plen;
 int main()
 {
 	int n,m;scanf("%d%d",&n,&m);
@@ -141,19 +146,25 @@ int main()
 			p=fa[p];
 		}
 		p=root;
+		plen=0;
 		bool bk;
-		long long ss=f[p];
+		long long ss=f[p],ff=0;
 		do
 		{
 			bk=false;
 			for(int k=last[p];k>0;k=a[k].next)
 			{
 				int y=a[k].y;
-				long long gg=g[root]-g[y];
-				if(gg<g[y])
+				long long gg=sf[y]+ff;
+				for(int i=1;i<=plen;i++)gg=gg+pa[i].g*dis(pa[i].x,fs[y]);
+				gg=gg+f[p]-sf[y]-g[y]*dis(p,fs[y])+(g[p]-g[y])*dis(p,fs[y]);
+				if(gg<ss)
 				{
 					bk=true;
-					ss=ss+gg*dis(p,y)-g[y]*dis(p,fs[y])-sf[y]+f[y];
+					pa[++plen]=(zuxian){p,g[p]-g[y]};
+					ff=ff+f[p]-sf[y]-g[y]*dis(p,fs[y]);
+					ss=f[y]+ff;
+					for(int i=1;i<=plen;i++)ss=ss+pa[i].g*dis(pa[i].x,y);
 					p=y;
 					break;
 				}
