@@ -2,7 +2,7 @@
 #include<cstring>
 using namespace std;
 char a[110000];
-int f[110000];
+int f[210000];
 int main()
 {
 	int t;scanf("%d",&t);
