@@ -44,7 +44,7 @@ int main()
 		{
 			if(i+(n+1)/2>n)
 			{
-				printf("%d %d",i,n);
+				printf("%d %d\n",i,n);
 				b[i][n]=true;
 				break;
 			}
