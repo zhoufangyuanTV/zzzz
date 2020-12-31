@@ -15,40 +15,38 @@ inline void write(long long x)
 	while(y!=1){y=y/10;putchar(x/y+'0');x=x%y;}
 	putchar('\n');
 }
-int n,a[1010000];
-long long ss;
-void dfs(int k,long long s)
-{
-	if(k==n+1)
-	{
-		if(ss<s)ss=s;
-	}
-	else
-	{
-		if(a[k]==0)dfs(k+1,s);
-		for(int i=k;i<=n+1;i++)
-		{
-			if(a[i]==0)
-			{
-				for(int j=k;j<i;j++)a[j]++;
-				break;
-			}
-			a[i]--;
-			dfs(k,s+(k^i));
-		}
-	}
-}
+int a[1010000],b[1010000];
+inline int mymin(int x,int y){return x<y?x:y;}
 int main()
 {
 	freopen("horsehunter.in","r",stdin);
 	freopen("horsehunter.out","w",stdout);
-	int m;read(n);read(m);
+	int n,m;read(n);read(m);
 	for(int i=1;i<=n;i++)read(a[i]);a[n+1]=0;
-	ss=0;dfs(1,0);write(ss);
+	long long ss=0;
+	for(int i=1;i<=n;i+=2)
+	{
+		ss=ss+1ll*mymin(a[i],a[i+1])*(i^i+1);
+		b[i]=a[i]-mymin(a[i],a[i+1]);
+		b[i+1]=a[i+1]-mymin(a[i],a[i+1]);
+	}
+	b[n+1]=b[n+2]=0;
+	for(int i=2;i<=n;i+=2)ss=ss+mymin(b[i],b[i+1]);
+	write(ss);
 	for(int i=1;i<=m;i++)
 	{
-		int x;read(x);read(a[x]);
-		ss=0;dfs(1,0);write(ss);
+		int x;read(x);
+		int y=x&1?x+1:x-1;
+		ss=ss-1ll*mymin(a[x],a[y])*(x^y);
+		read(a[x]);
+		ss=ss+1ll*mymin(a[x],a[y])*(x^y);
+		int xx=x&1?x-1:x+1;
+		int yy=y&1?y-1:y+1;
+		ss=ss-mymin(b[x],b[xx])-mymin(b[y],b[yy]);
+		b[x]=a[x]-mymin(a[x],a[y]);
+		b[y]=a[y]-mymin(a[x],a[y]);
+		ss=ss+mymin(b[x],b[xx])+mymin(b[y],b[yy]);
+		write(ss);
 	}
 	return 0;
 }
