@@ -35,34 +35,28 @@ void dfs(int x)
 	if(gs>1)g[x]++;
 }
 long long f[1100][11][1100];
-inline long long mymax(long long x,long long y){return x>y?x:y;}
 inline long long mymin(long long x,long long y){return x<y?x:y;}
 long long dfs(int x,int i,int j)
 {
 	if(leaf[x])return 0;
 	if(i>g[x])i=g[x];
 	if(f[x][i][j]!=-1)return f[x][i][j];
-	long long s=d[j]-d[x],sss=0,ssss=0;
-	int cnt=0;
+	long long s=0,sss=0;
 	for(int k=last[x];k>0;k=a[k].next)
 	{
 		int y=a[k].y;
 		if(y!=fa[x])
 		{
-			cnt++;
-			long long g,h=dfs(y,i,j);
-			s=s+d[y]-d[j]+h;
-			if(i>0)
-			{
-				g=dfs(y,i-1,x);
-				sss=sss+a[k].c+g;
-				ssss=mymax(ssss,g-h);
-			}
+			long long g,h=dfs(y,i,j),in,out;
+			if(i>0)g=dfs(y,i-1,x);
+			else g=0x3f3f3f3f3f3f3f3fll;
+			in=mymin(a[k].c+g,j==0?0x3f3f3f3f3f3f3f3fll:d[y]-d[j]+h);
+			out=mymin(a[k].c+g,a[k].c+h);
+			sss=mymin(s+out,in+sss);
+			s=s+in;
 		}
 	}
-	if(j==0&&cnt>1)return f[x][i][j]=sss-ssss;
-	else if(i==0)return f[x][i][j]=s;
-	else return f[x][i][j]=mymin(s,sss-ssss);
+	return f[x][i][j]=mymin(s,sss);
 }
 int main()
 {
