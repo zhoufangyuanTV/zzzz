@@ -42,6 +42,7 @@ int main()
 					{
 						t-=tot[x[z]];
 						tt-=tot[x[z]];
+						z=y[z];
 					}
 				}
 				du[i][fa[j]]=(du[i][z]+w[z]+(p[j]<tot[x[fa[j]]]?du[fa[j]][z]:dv[fa[j]][z]))%1000000007;
@@ -76,6 +77,7 @@ int main()
 					{
 						t-=tot[x[z]];
 						tt-=tot[x[z]];
+						z=y[z];
 					}
 				}
 				dv[i][fa[j]]=(dv[i][z]+w[z]+(p[j]<tot[x[fa[j]]]?du[fa[j]][z]:dv[fa[j]][z]))%1000000007;
