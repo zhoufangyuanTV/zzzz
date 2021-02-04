@@ -13,9 +13,9 @@ inline long long ksm(long long x,long long k)
 	}
 	return s;
 }
-long long jc[110],fjc[110];
-inline long long C(int n,int m){return n<m?0:jc[n]*fjc[n-m]%p*fjc[m]%p;}
-long long f[110][110][110],g[110][110][110];
+long long jc[410],fjc[410];
+inline long long C(int n,int m){return jc[n]*fjc[n-m]%p*fjc[m]%p;}
+long long f[410][410],g[410][410],h[410][410];
 int main()
 {
 	freopen("far.in","r",stdin);
@@ -25,33 +25,28 @@ int main()
 	for(int i=1;i<=n;i++)jc[i]=jc[i-1]*i%p;
 	fjc[n]=ksm(jc[n],p-2);
 	for(int i=n-1;i>=0;i--)fjc[i]=fjc[i+1]*(i+1)%p;
-	memset(f,0,sizeof(f));f[0][0][1]=1;
-	memset(g,0,sizeof(g));
+	memset(f,0,sizeof(f));f[0][1]=0;g[0][1]=1;
+	for(int i=1;i<=n-2;i++)
+	{
+		for(int j=1;i+j<n;j++)h[i][j]=ksm(ksm(2,i)+p-1,j);
+	}
 	for(int i=1;i<n;i++)
 	{
-		for(int j=i;j<n;j++)
+		for(int j=1;j<i;j++)
 		{
-			for(int k=1;k<=j-i+1;k++)
+			for(int k=1;k<=i-j;k++)
 			{
-				for(int l=1;l<=j-k-i+2;l++)
-				{
-					f[i][j][k]=(f[i][j][k]+f[i-1][j-k][l]*ksm(ksm(2,l)+p-1,k))%p;
-					g[i][j][k]=(g[i][j][k]+g[i][j-k][l]*ksm(ksm(2,l)+p-1,k))%p;
-				}
-				f[i][j][k]=f[i][j][k]*C(j,k)%p*ksm(2,k*(k-1)/2)%p;
-				g[i][j][k]=g[i][j][k]*C(j-1,k)%p*ksm(2,k*(k-1)/2)%p;
-				g[i][j][k]=(g[i][j][k]+f[i][j][k]*k%p*jc[j-1]%p*fjc[j])%p;
+				f[i][j]=(f[i][j]+(f[i-j][k]+g[i-j][k]*(n-i+j-1))%p*h[k][j])%p;
+				g[i][j]=(g[i][j]+g[i-j][k]*h[k][j])%p;
 			}
+			f[i][j]=f[i][j]*C(i,j)%p*ksm(2,j*(j-1)/2)%p;
+			g[i][j]=g[i][j]*C(i,j)%p*ksm(2,j*(j-1)/2)%p;
 		}
+		f[i][i]=(n-1)*ksm(2,i*(i-1)/2);
+		g[i][i]=ksm(2,i*(i-1)/2);
 	}
 	long long ss=0;
-	for(int i=1;i<n;i++)
-	{
-		for(int j=1;j<=n-i;j++)
-		{
-			ss=(ss+g[i][n-1][j]*i)%p;
-		}
-	}
-	printf("%lld\n",ss);
+	for(int i=1;i<n;i++)ss=(ss+f[n-1][i])%p;
+	printf("%lld\n",ss*ksm(n-1,p-2)%p);
 	return 0;
 }

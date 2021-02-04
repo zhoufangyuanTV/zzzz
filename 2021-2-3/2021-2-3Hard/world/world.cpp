@@ -22,10 +22,12 @@ int main()
 		{
 			for(int j=1;j<m;j++)
 			{
+				int cc=1;
 				for(int ii=i+1,jj=j+1;ii<=n&&jj<=m;ii+=2,jj+=2)
 				{
 					int k=a[i+1][j]^a[i][j+1]^a[ii-1][j]^a[ii][j+1]^a[i][jj-1]^a[i+1][jj]^a[ii-1][jj]^a[ii][jj-1];
 					if(k==1){bk=false;break;}
+					if(cc++>2)break;
 				}
 				if(bk==false)break;
 			}
