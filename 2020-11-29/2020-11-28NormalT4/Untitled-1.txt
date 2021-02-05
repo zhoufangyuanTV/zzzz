@@ -1,0 +1,14 @@
+pts:
+1~n qishidian
+n+1~n+m*2 duandian
+n+m*2+1~n+m*4 zhengliudian
+n+m*4+1 zhongdian
+
+edge:
+1~n qishidianchubian
+n+1~n+m*2 duandianchubian
+n+m*2+1~n+m*4 duandianrubian
+n+m*4+1~n+m*6 zuozhengliudianrubian
+n+m*6+1~n+m*8 youzhengliudianchubian
+n+m*8+1~n+m*9 zhengliubianzuodaoyou
+n+m*9+1~n+m*10 zhengliubianyoudaozuo
