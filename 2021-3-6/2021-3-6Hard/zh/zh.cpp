@@ -1,5 +1,6 @@
 #include<cstdio>
 #include<cstring>
+#include<list>
 using namespace std;
 inline void read(int &x)
 {
@@ -17,16 +18,26 @@ inline void ins(int x,int y)
 	len++;a[len].x=x;a[len].y=y;
 	a[len].next=last[x];last[x]=len;
 }
-int d[1010000],dd[1010000],ddd[1010000];
-void dfs(int x,int fa,int dep)
+int fa[1010000],dep[1010000],son[1010000],tot[1010000];
+void dfs1(int x)
 {
-	d[dep]++;
+	tot[x]=1;son[x]=0;
 	for(int k=last[x];k>0;k=a[k].next)
 	{
 		int y=a[k].y;
-		if(y!=fa)dfs(y,x,dep+1);
+		if(y!=fa[x])
+		{
+			fa[y]=x;
+			dep[y]=dep[x]+1;
+			if(tot[son[x]]<tot[y])son[x]=y;
+			if(tot[x]<tot[y]+1)tot[x]=tot[y]+1;
+		}
 	}
 }
+long long ss=0;
+list<long long> f[1010000],g[1010000];
+void dfs2(int x)
+{}
 int main()
 {
 	freopen("zh.in","r",stdin);
@@ -38,23 +49,5 @@ int main()
 		int x,y;read(x);read(y);
 		ins(x,y);ins(y,x);
 	}
-	long long ss=0;
-	for(int i=1;i<=n;i++)
-	{
-		for(int i=1;i<=n;i++)dd[i]=ddd[i]=0;
-		for(int k=last[i];k>0;k=a[k].next)
-		{
-			int y=a[k].y;
-			for(int i=1;i<=n;i++)d[i]=0;
-			dfs(y,i,1);
-			for(int i=1;i<=n;i++)
-			{
-				ss+=ddd[i]*d[i];
-				ddd[i]+=dd[i]*d[i];
-				dd[i]+=d[i];
-			}
-		}
-	}
-	printf("%lld\n",ss);
 	return 0;
 }
