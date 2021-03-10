@@ -39,7 +39,7 @@ int main()
 		bool bk=false;
 		for(int i=2;i<plen;i++)
 		{
-			if(ty[i]==0&&p[i]-p[i-1]+1==len&&p[i+1]-p[i]+1==len)
+			if(ty[p[i]]==0&&p[i]-p[i-1]+1==len&&p[i+1]-p[i]+1==len)
 			{
 				bk=true;break;
 			}
