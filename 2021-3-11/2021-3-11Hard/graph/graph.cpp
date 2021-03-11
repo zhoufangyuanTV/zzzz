@@ -113,9 +113,9 @@ int main()
 					else Ans[B[j]]=0;
 					for(j++;j<=k;j++)Ans[B[j]]=Ans[B[j-1]]+1;
 				}
-				if(j>1)Ans[A[i]]=Ans[B[j-1]]-R+1;
-				else if(i==1)Ans[A[i]]=-R;
+				if(i==1)Ans[A[i]]=-R;
 				else Ans[A[i]]=Ans[A[i-1]]+1;
+				if(j>1&&Ans[A[i]]<Ans[B[j-1]]-R+1)Ans[A[i]]=Ans[B[j-1]]-R+1;
 			}
 			if(bk&&j<=Bl)
 			{
@@ -137,7 +137,7 @@ int main()
 			if(c[X]==1)X^=Y^=X^=Y;
 			if(Al==p[Y]&&Bl==p[X])
 			{
-				for(int i=1;i<=Al;i++)
+				for(int i=2;i<=Al;i++)
 				{
 					if(X==A[i])
 					{
@@ -145,7 +145,7 @@ int main()
 						break;
 					}
 				}
-				for(int i=1;i<=Bl;i++)
+				for(int i=1;i<Bl;i++)
 				{
 					if(Y==B[i])
 					{
@@ -168,14 +168,14 @@ int main()
 						else Ans[B[j]]=1;
 						for(j++;j<=k;j++)Ans[B[j]]=Ans[B[j-1]]+1;
 					}
-					if(j>1)Ans[A[i]]=Ans[B[j-1]]-R+1;
-					else Ans[A[i]]=Ans[A[i-1]]+1;
+					Ans[A[i]]=Ans[A[i-1]]+1;
+					if(j>1&&Ans[A[i]]<Ans[B[j-1]]-R+1)Ans[A[i]]=Ans[B[j-1]]-R+1;
 				}
 				if(bk&&j<Bl)
 				{
 					if(Al>1)Ans[B[j]]=Ans[A[Al]]+R;
 					else Ans[B[j]]=1;
-					for(j++;j<=Bl;j++)Ans[B[j]]=Ans[B[j-1]]+1;
+					for(j++;j<Bl;j++)Ans[B[j]]=Ans[B[j-1]]+1;
 				}
 				if(bk==false)puts("No");
 				else
