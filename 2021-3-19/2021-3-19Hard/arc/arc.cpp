@@ -36,6 +36,7 @@ int main()
 			}
 			if(st<last[i-1])continue;
 			f[i]=1;
+			if(v==n)ss=(ss+1)%998244353;
 			for(i=i+1;i<=st+3*n-1;i++)
 			{
 				cnt[a[i]]++;
