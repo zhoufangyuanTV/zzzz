@@ -1,6 +1,8 @@
 #include<cstdio>
 #include<cstring>
 using namespace std;
+long long jc[1010000],fjc[1010000];
+inline long long C(int n,int m){return jc[n]*fjc[n-m]%998244353*fjc[m]%998244353;}
 long long ksm(long long x,long long k)
 {
 	long long s=1;
@@ -12,43 +14,37 @@ long long ksm(long long x,long long k)
 	}
 	return s;
 }
-long long f[2100][2100],g[2100][2100],h[2100][2100];
+int n,K;
+inline long long h(int p,int s)
+{
+	long long ss=0;
+	for(int i=0;i<=p/s;i++)
+	{
+		ss=(ss+ksm(998244354-K,i)*ksm(K,p-i*s)%998244353*C(i+p-i*s,i))%998244353;
+	}
+	return ss;
+}
+inline long long f(int s)
+{
+	return (h(n,s)-h(n-s,s)+998244353)%998244353;
+}
+long long ful;
+inline long long g(int s)
+{
+	return (ful-f(s)+998244353)%998244353;
+}
 int main()
 {
 	freopen("interwoven.in","r",stdin);
 	freopen("interwoven.out","w",stdout);
-	int n,m,x;scanf("%d%d%d",&n,&m,&x);
-	if(m==2&&x>n/2)
-	{
-		long long ss=0;
-		for(int i=x+1;i<n;i++)
-		{
-			long long s=((n-i-1)*ksm(2,n-i-2)+2*ksm(2,n-i-1))%998244353;
-			ss=(ss+s*(i-x))%998244353;
-		}
-		ss=(ss+n-x)*2%998244353;
-		printf("%lld\n",ss);
-		return 0;
-	}
-	memset(f,0,sizeof(f));
-	memset(g,0,sizeof(g));
-	memset(h,0,sizeof(h));
-	for(int i=1;i<=n;i++)
-	{
-		f[i][i]=m;
-		for(int j=1;j<i;j++)
-		{
-			f[i][i-j]=(f[i][i-j]+(m-1)*g[j][i-j])%998244353;
-			f[i][j]=(f[i][j]+(m-1)*(h[i-1][j]-h[i-j][j]+998244353))%998244353;
-		}
-		for(int j=1;j<=n;j++)
-		{
-			g[i][j]=(f[i][j]+g[i][j-1])%998244353;
-			h[i][j]=(f[i][j]+h[i-1][j])%998244353;
-		}
-	}
+	int x;scanf("%d%d%d",&n,&K,&x);
+	jc[0]=1;
+	for(int i=1;i<=n;i++)jc[i]=jc[i-1]*i%998244353;
+	fjc[n]=ksm(jc[n],998244351);
+	for(int i=n-1;i>=0;i--)fjc[i]=fjc[i+1]*(i+1)%998244353;
 	long long ss=0;
-	for(int i=x+1;i<=n;i++)ss=(ss+(i-x)*f[n][i])%998244353;
+	ful=ksm(K,n);
+	for(int i=x+1;i<=n;i++)ss=(ss+g(i))%998244353;
 	printf("%lld\n",ss);
 	return 0;
 }
