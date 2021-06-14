@@ -21,37 +21,61 @@ inline void ins(int x,int y)
 }
 int list[1010000],d[1010000];
 long long f[1010000],g[1010000];
-void dfs1(int x)
+int tp[1010000];
+void bfs()
 {
-	for(int k=last[x];k>0;k=a[x].next)
+	int head=0,tail=1;tp[0]=0;
+	while(head<tail)
 	{
-		int y=a[k].y;
-		dfs1(y);
-		ep[x]+=ep[y];
+		int x=tp[head];
+		for(int k=last[x];k>0;k=a[k].next)
+		{
+			int y=a[k].y;
+			tp[tail++]=y;
+		}
+		head++;
 	}
 }
-void dfs2(int x)
+void dfs1()
 {
-	for(int k=last[x];k>0;k=a[k].next)
+	for(int i=trlen;i>=1;i--)
 	{
-		int y=a[k].y;
-		f[y]=(f[y]+f[x])%1000000007;
-		g[y]=(g[y]+g[x]+f[x]*(tr[y].len-tr[x].len))%1000000007;
-		dfs2(y);
+		int x=tp[i];
+		for(int k=last[x];k>0;k=a[k].next)
+		{
+			int y=a[k].y;
+			ep[x]+=ep[y];
+		}
+	}
+}
+void dfs2()
+{
+	for(int i=1;i<=trlen;i++)
+	{
+		int x=tp[i];
+		for(int k=last[x];k>0;k=a[k].next)
+		{
+			int y=a[k].y;
+			f[y]=(f[y]+f[x])%1000000007;
+			g[y]=(g[y]+f[x]*(tr[y].len-tr[x].len))%1000000007;
+		}
 	}
 }
 int lg2[1010000],dep[1010000];
-void dfs3(int x)
+void dfs3()
 {
-	for(int i=1;i<=lg2[dep[x]];i++)fa[x][i]=fa[fa[x][i-1]][i-1];
-	for(int k=last[x];k>0;k=a[k].next)
+	for(int i=0;i<=trlen;i++)
 	{
-		int y=a[k].y;
-		dep[y]=dep[x]+1;
-		dfs3(y);
+		int x=tp[i];
+		for(int i=1;i<=lg2[dep[x]];i++)fa[x][i]=fa[fa[x][i-1]][i-1];
+		for(int k=last[x];k>0;k=a[k].next)
+		{
+			int y=a[k].y;
+			dep[y]=dep[x]+1;
+		}
 	}
 }
-int ff[1010000];
+int ff[1010000],zh[1010000];
 long long Ans[1010000];
 int ffa(int x){return ff[x]==x?x:ff[x]=ffa(ff[x]);}
 int main()
@@ -67,11 +91,14 @@ int main()
 	for(int i=1;i<=n;i++)
 	{
 		int c=s[i]-'a';
-		tr[lst].son[c]=++trlen;
-		tr[trlen].len=i;
-		int k=tr[lst].fail;
-		while(k!=-1&&tr[k].son[c]==0)k=tr[k].fail;
+		tr[++trlen].len=i;
+		int k=lst;
 		lst=trlen;
+		while(k!=-1&&tr[k].son[c]==0)
+		{
+			tr[k].son[c]=trlen;
+			k=tr[k].fail;
+		}
 		if(k==-1)tr[lst].fail=0;
 		else
 		{
@@ -101,9 +128,10 @@ int main()
 		fa[i][0]=tr[i].fail;
 		if(fa[i][0]!=-1)ins(fa[i][0],i);
 	}
+	bfs();
 	memset(ep,0,sizeof(ep));
 	for(int i=1;i<=n;i++)ep[pos[i]]=1;
-	dfs1(0);
+	dfs1();
 	memset(d,0,sizeof(d));
 	for(int i=0;i<=trlen;i++)
 	{
@@ -123,18 +151,20 @@ int main()
 		for(int i=0;i<e[x].size();i++)
 		{
 			int y=e[x][i];
+			d[y]--;
+			if(d[y]==0)list[tail++]=y;
 			f[y]=(f[y]+f[x])%1000000007;
 			g[y]=(g[y]+g[x]+f[x]*(tr[y].len-tr[x].len-1))%1000000007;
 		}
 		head++;
 	}
-	dfs2(0);
+	dfs2();
 	lg2[0]=-1;
 	for(int i=1;i<=n;i++)lg2[i]=lg2[i/2]+1;
 	dep[0]=0;
-	dfs3(0);
-	for(int i=0;i<=trlen;i++)ff[i]=i,Ans[i]=g[i];
-	for(int i=0;i<=trlen;i++)
+	dfs3();
+	for(int i=1;i<=trlen;i++)ff[i]=i,zh[i]=1,Ans[i]=g[i]*ep[i]%1000000007;
+	for(int i=1;i<=trlen;i++)
 	{
 		for(int j=0;j<e[i].size();j++)
 		{
@@ -144,8 +174,18 @@ int main()
 				int fx=ffa(i),fy=ffa(y);
 				if(fx!=fy)
 				{
-					ff[fx]=fy;
-					Ans[fy]=(Ans[fy]+Ans[fx])%1000000007;
+					if(zh[fx]<zh[fy])
+					{
+						ff[fx]=fy;
+						zh[fy]+=zh[fx];
+						Ans[fy]=(Ans[fy]+Ans[fx])%1000000007;
+					}
+					else
+					{
+						ff[fy]=fx;
+						zh[fx]+=zh[fy];
+						Ans[fx]=(Ans[fx]+Ans[fy])%1000000007;
+					}
 				}
 			}
 		}
@@ -159,7 +199,7 @@ int main()
 		{
 			if(1<<i<=dep[x]&&r-l+1<=tr[fa[x][i]].len)x=fa[x][i];
 		}
-		printf("%lld\n",Ans[x]);
+		printf("%lld\n",Ans[ffa(x)]);
 	}
 	return 0;
 }
