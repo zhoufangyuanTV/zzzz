@@ -1,0 +1,162 @@
+\documentclass{ctexbeamer}
+\usefonttheme{serif}
+\setCJKmainfont[AutoFakeBold]{KaiTi}
+\usepackage{tikz}
+\renewcommand{\today}{\number\year 年 \number\month 月 \number\day 日}
+
+\title{玩具火车}
+\subtitle{我的第二个 \LaTeX 作品}
+\author{zhoufangyuanPT}
+\date{\today}
+\usebackgroundtemplate{%
+\tikz\node[opacity=0.16] {\includegraphics[height=\paperheight,width=\paperwidth]{F6.png}};}
+
+\begin{document}
+	\begin{frame}
+		\titlepage
+	\end{frame}
+
+	\begin{frame}{题目描述}
+		Alice（爱丽丝）和 Beatrice（比亚特丽斯）建了一个有 $n$ 个点和 $m$ 条有向边的图。
+
+		某些点是充电站。当火车抵达某个充电站时，它就会被充满电。满电火车驶过恰好 $n$ 段轨道后会没电。
+
+		每个点都有一个开关，用来指定火车从该点离开时驶向的出边。
+
+		Alice 和 Beatrice 打算玩游戏。她们已经分完了所有点：每个点要么归 Alice，要么归 Beatrice。游戏开始时，火车从 $s$ 出发，并充满了电。
+
+		在火车首次进入某个点时（包括游戏开始时），该点的拥有者都要确定开关。开关一旦确定就不可更改。
+
+		火车最终会进入某个环。如果火车能够一直行驶下去，Alice 就赢了。否则 Beatrice 就赢了。
+
+		现在给你一个这样的图，并告诉你每个点的拥有者。对于所有点 $s(1\leq s\leq n)$，判断起始点为 $s$ 时，是 Alice 必胜还是 Beatrice 必胜。
+	\end{frame}
+
+	\begin{frame}{数据范围和限制}
+		\begin{itemize}
+			\item $1\leq n\leq 5000$
+
+			\item $n\leq m\leq 20000$
+
+			\item 至少会有一个充电站。
+
+			\item 每个点至少会有一条边以它为起点。
+
+			\item 无重边，可能有自环。
+		\end{itemize}
+
+		\begin{description}
+			\item[时间限制] 2 sec
+
+			\item[空间限制] 256 MB
+		\end{description}
+	\end{frame}
+
+	\begin{frame}[t]{你知道吗？}
+		\begin{enumerate}
+			\item \textcolor{red}{这题的样例没有任何用处。}
+
+			\item 原本的题面中人名分别为 Arezou 和 Borzou，设定上是一对双胞胎兄妹，但不知道为什么被做 PPT 的人改成了 Alice 和 Beatrice。
+
+			\item 毛啸只花了一个小时就获得了 5 分的好成绩。
+
+			\item 所有在比赛时 AC 了本题的人都在当年（2017年）获得了 IOI 金牌。
+		\end{enumerate}
+	\end{frame}
+
+	\begin{frame}{游戏的本质}
+		\begin{figure}
+			\includegraphics[width=\textwidth]{F1.png}
+		\end{figure}
+
+		火车愉快的行驶着。
+
+		\begin{figure}
+			\includegraphics[width=\textwidth]{F2.png}
+		\end{figure}
+
+		突然陷入了一个环，如果环中有充电站，那么 Alice 赢，否则 Beatrice 赢。
+
+		由于满电的车可以行驶 $n$ 条边，所以火车的电足以走到环内的第一个充电站，且该充电站足以支持火车一直在环内行驶下去。
+	\end{frame}
+
+	\begin{frame}{一个做法}
+		\begin{block}{先做一次拓扑排序}
+			考虑什么时候 B 必胜。
+
+			此时火车需要进入一个没有充电站的环，那 Alice 就会尽可能地让火车驶向充电站。
+
+			可以从充电站开始做拓扑排序并 DP，把所有无论 Beatrice 如何操作，火车都会行驶到充电站的点找出来。
+
+			\textcolor{red}{若火车行驶到一个不会到充电站的点，那 B 必胜。}
+		\end{block}
+
+		\begin{block}{再做一次拓扑排序}
+			再考虑到了充电站的点怎么办。
+			
+			如果到了充电站后，无论 Alice 如何操作，都会驶向一个 B 的必胜点，那么 Alice 还是会输。
+
+			我们就不考虑充电站，从 B 的必胜点开始再做一次拓扑排序并 DP，剩下的点就是 A 的必胜点了。
+		\end{block}
+	\end{frame}
+
+	\begin{frame}{耶！爆标了}
+		时间复杂度：$O(m)$，$m\leq 20000$
+
+		哇，这就出一道阴间加强版。
+
+		\begin{figure}
+			\includegraphics[width=\textwidth]{F3.png}
+		\end{figure}
+
+		（我也不知道为什么过了一个 Subtask
+	\end{frame}
+
+	\begin{frame}{怎么办？}
+		\begin{exampleblock}{一个反例}
+			\begin{figure}
+				\includegraphics[width=\textwidth]{F4.png}
+			\end{figure}
+		\end{exampleblock}
+
+		左边两个点虽然不会到 B 的必胜点，但是这样它们就到不了充电站了。
+
+		观察数据范围：$n\leq 5000, m\leq 20000$
+
+		懂了！我们需要一个 $O(nm)$ 的做法。
+	\end{frame}
+
+	\begin{frame}{蓝字}
+		\textcolor{blue}{如果一个充电站会不可避免地驶向 B 的必胜点，那么这个充电站相当于没有。}
+
+		\begin{proof}
+			如果一列火车驶入了该充电站，那么它一定会驶向 B 的必胜点。
+
+			驶入 B 的必胜点后，无论 Alice 怎么操作，最后一定会落入一个没有充电站的环。
+
+			充电站只有在环内的时候才有作用，因此这个充电站相当于不存在。
+		\end{proof}
+	\end{frame}
+
+	\begin{frame}{正解}
+		现在我们重新考虑最初的那个做法在干什么。
+
+		\begin{figure}
+			\includegraphics[width=\textwidth]{F5.png}
+		\end{figure}
+
+		相当于有一条有若干个充电站的链，我们每次把最后一个充电站删去。
+
+		\textcolor{red}{如果删到不能再删，那么剩下的充电站肯定可以相互到达（包括到自身）。}
+
+		我们只需要把最初的做法做 $n$ 次，每次把是 B 的必胜点的充电站设为没有，就可以求出所有 B 的必胜点了。
+
+		时间复杂度：$O(nm)$
+	\end{frame}
+
+	\begin{frame}[t]{The End}
+		第一次做完整的 PPT，做得不好，还请原谅。
+
+		谢谢。
+	\end{frame}
+\end{document}

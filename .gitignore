@@ -6,4 +6,5 @@
 !*.bat
 !*.md
 !*.txt
+!*.tex
 !/.gitignore
