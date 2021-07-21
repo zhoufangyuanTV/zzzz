@@ -1,0 +1,58 @@
+\documentclass{ctexbeamer}
+\setCJKsansfont[AutoFakeBold]{KaiTi}
+\usefonttheme[onlymath]{serif}
+\renewcommand{\today}{\number\year 年 \number\month 月 \number\day 日}
+
+\title{高速公路收费}
+\subtitle{我的第一个 \TeX 作品}
+\author{zhoufangyuanPT}
+\date{\today}
+
+\begin{document}
+	\begin{frame}
+		\titlepage
+	\end{frame}
+
+	\begin{frame}{高速公路收费}
+		\begin{block}{题目描述}
+			这是一道\textbf{交互题}。
+			
+			给出一张 $n$ 个点 $m$ 条边的无向连通图，并给出两个数 $A$ 和 $B$。
+			
+			交互库内部会有两个点 $S$ 和 $T$。
+			
+			你可以设置每条边边权为 $A$ 或 $B$，并询问交互库 $S$ 到 $T$ 的最短路。
+			
+			你需要通过若干次询问找出 $S$ 和 $T$（$S$ 和 $T$ 之间的顺序不重要）。
+		\end{block}
+		
+		\begin{block}{数据范围与提示}
+			$2\leq N\leq 9\times 10^4,1\leq M\leq 1.3\times 10^5,1\leq A<B\leq 10^9$
+
+			$\lceil\log_2{9\times 10^4}\rceil=17,\lceil\log_2{1.3\times 10^5}\rceil=17$
+		\end{block}
+
+		\begin{block}{子任务}
+			设询问次数为 $X$。
+
+			\begin{enumerate}
+				\item (12 分) $S$ 或 $T$ 有一个是 $1$，$M=N-1$，$X\leq 60$
+				
+				\item (39 分) $M=N-1$，$X\leq 60$
+				
+				\item (49 分) $X\leq 50$
+			\end{enumerate}
+		\end{block}
+	\end{frame}
+
+	\begin{frame}[t]{你知道吗？}
+		比赛时只有 \textcolor[RGB]{30,132,73}{Benq} 通过了这道题。
+
+		然而同一天的另外两道题他都没有通过。
+	\end{frame}
+
+	\begin{frame}{终焉}
+		谢。
+	\end{frame}
+
+\end{document}
